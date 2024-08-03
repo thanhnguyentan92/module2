@@ -138,6 +138,14 @@ class QuanLyBenhAn{
         danhsachBenhAn.add(benhAn);
         readFile();
     }
+    public void xoaBenhAn(String maBenhAn){
+        for (int i = 0; i < danhsachBenhAn.size(); i++){
+            if(danhsachBenhAn.get(i).getMaBenhAn() == maBenhAn){
+                danhsachBenhAn.remove(i);
+                readFile();
+            }
+        }
+    }
     public void readFile() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
             for (BenhAn benhAn : danhsachBenhAn) {
@@ -196,14 +204,13 @@ class QuanLyBenhAn{
                     } else if (loai == 2) {
                         System.out.print("nhap goi vip: ");
                         String goiVIP = scanner.nextLine();
-                        //   BenhAn benhAnVIP = new BenhAnVIP(maBenhAn, tenBenhNhan, ngayNhap, goiVIP);
-                        //   quanLy.themBenhAn(benhAnVIP);
+                        
                     }
                     break;
                 case 2:
                     System.out.print("nhap ma can xoa: ");
                     String maBenhAnXoa = scanner.nextLine();
-                    //  quanLy.xoaBenhAn(maBenhAnXoa);
+                      quanly.xoaBenhAn(maBenhAnXoa);
                     break;
                 case 3:
                     System.out.println("Danh sach Benh An");
