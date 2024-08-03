@@ -225,7 +225,7 @@ public class Main {
     public static void main(String[] args) throws ParseException {
         QuanLyBenhAn quanLy = new QuanLyBenhAn();
         quanLy.Menu(quanLy);
-        quanLy.hienThiBenhAn();
+        
 
     }
 }
