@@ -24,8 +24,9 @@ abstract class BenhAn{
         this.ngayRaVien = ngayRaVien;
         this.liDoNhapVien = lyDoNhapVien;
     }
-    abstract public void Display_Information();
+
     abstract public String toString();
+    abstract public void Display_Information();
     public String getMaBenhAn() {
         return maBenhAn;
     }
@@ -101,30 +102,59 @@ abstract class BenhAn{
          return getSoThuTu() + "," + getMaBenhAn() + "," + getTen() + "," + getNgayNhapVien() + "," +getNgayRaVien() + "," + getLiDoNhapVien()+ ","+ getPhiNamVien();
     }
 }
+class BenhNhanVip extends BenhAn{
+    public String getLoaiVip() {
+        return loaiVip;
+    }
+
+    private String loaiVip;
+
+    public void setLoaiVip(String loaiVip) {
+        this.loaiVip = loaiVip;
+    }
+
+    public BenhNhanVip(int soThuTu, String maBenhAn, String Ten, String ngayNhapVien, String ngayRavien, String lido, String loaiVip){
+        super(soThuTu,maBenhAn,Ten,ngayRavien,ngayRavien,lido);
+        this.loaiVip = loaiVip;
+    }
+    public void Display_Information() {
+        System.out.println("So thu tu "+ getSoThuTu()+", "+ " Ma benh an "+ getMaBenhAn() + "Ten Benh An "+ getTen()+ "Ngay Nhap Vien  "+ getNgayNhapVien()
+                +"Ngay Ra Vien "+ getNgayRaVien() + " Ly do nhap vien "+getLiDoNhapVien()+ " Loai Vip"+ getLoaiVip()
+        );
+    }
+    public String toString(){
+        return this.getSoThuTu() + "," + getMaBenhAn() + "," + getTen() + "," + getNgayNhapVien() + "," +getNgayRaVien() + "," + getLiDoNhapVien()+ ","+ getLoaiVip();
+    }
+}
 class QuanLyBenhAn{
     private ArrayList<BenhAn> danhsachBenhAn;
-    private String fileName = "medical_record.csv";
+    private static String fileName = "medical_record.csv";
     public  QuanLyBenhAn(){
         danhsachBenhAn = new ArrayList<>();
 
     }
+
     public void themBenhAn(BenhAn benhAn) {
         danhsachBenhAn.add(benhAn);
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName, true))) {
-            bw.write(benhAn.toString());
-            bw.newLine();
-            System.out.println("them vao file.");
+        readFile();
+    }
+    public void readFile() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+            for (BenhAn benhAn : danhsachBenhAn) {
+                bw.write(benhAn.toString());
+                bw.newLine();
+            }
         } catch (IOException e) {
-            System.out.println("loi ghi: " + e.getMessage());
+            System.out.println("Lỗi khi ghi file CSV: " + e.getMessage());
         }
     }
-
-}
-public class Main {
-    public static void main(String[] args) throws ParseException {
-        QuanLyBenhAn quanLy = new QuanLyBenhAn();
+    public void hienThiBenhAn(){
+        for(BenhAn benhan: danhsachBenhAn){
+            benhan.Display_Information();
+        }
+    }
+    public void Menu(QuanLyBenhAn quanly){
         Scanner scanner = new Scanner(System.in);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         while (true) {
             System.out.println("1. Them Benh An");
             System.out.println("2. Xoa ");
@@ -142,6 +172,7 @@ public class Main {
                 case 1:
                     System.out.print("so thu tu: ");
                     int soThuTu = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.print("Ma benh an: ");
                     String maBenhAn = scanner.nextLine();
                     System.out.print("Ten Benh Nhan: ");
@@ -152,6 +183,7 @@ public class Main {
                     String ngayRavien = scanner.nextLine();
                     System.out.print("Li Do: ");
                     String liDo = scanner.nextLine();
+                    System.out.println("Tien nhap vien:");
                     double phiNamVien = scanner.nextDouble();
                     System.out.print("Loai benh an (1: Thuong, 2: VIP): ");
                     int loai = scanner.nextInt();
@@ -160,19 +192,33 @@ public class Main {
                     if (loai == 1) {
                         BenhAn benhAnThuong = new BenhAnThuong(soThuTu, maBenhAn, tenBenhNhan, ngayNhap, ngayRavien, liDo, phiNamVien);
 
-                        quanLy.themBenhAn(benhAnThuong);
+                        quanly.themBenhAn(benhAnThuong);
                     } else if (loai == 2) {
-                        System.out.print("Nhập gói VIP: ");
+                        System.out.print("nhap goi vip: ");
                         String goiVIP = scanner.nextLine();
                         //   BenhAn benhAnVIP = new BenhAnVIP(maBenhAn, tenBenhNhan, ngayNhap, goiVIP);
                         //   quanLy.themBenhAn(benhAnVIP);
                     }
                     break;
                 case 2:
-                    System.out.print("Nhập mã bệnh án cần xóa: ");
+                    System.out.print("nhap ma can xoa: ");
                     String maBenhAnXoa = scanner.nextLine();
                     //  quanLy.xoaBenhAn(maBenhAnXoa);
                     break;
+                case 3:
+                    System.out.println("Danh sach Benh An");
+                    quanly.hienThiBenhAn();
+                    break;
             }
         }
-    }}
+    }
+
+}
+public class Main {
+    public static void main(String[] args) throws ParseException {
+        QuanLyBenhAn quanLy = new QuanLyBenhAn();
+        quanLy.Menu(quanLy);
+        quanLy.hienThiBenhAn();
+
+    }
+}
